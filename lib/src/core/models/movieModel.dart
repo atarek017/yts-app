@@ -1,0 +1,36 @@
+class MovieMode {
+  final int id;
+  final String url;
+  final String title;
+  final int year;
+  final String rating;
+  final int runtime;
+  final List<dynamic> genres;
+  final String summary;
+  final String language;
+  final String medium_cover_image;
+
+  MovieMode(
+      {this.id,
+      this.url,
+      this.title,
+      this.year,
+      this.rating,
+      this.genres,
+      this.language,
+      this.medium_cover_image,
+      this.runtime,
+      this.summary});
+
+  MovieMode.fromJson(Map<String, dynamic> parsedJson)
+      : this.id = parsedJson['id'],
+        this.url = parsedJson['url'],
+        this.year = parsedJson['year'],
+        this.rating = parsedJson['rating'].toString(),
+        this.runtime = parsedJson['runtime'],
+        this.genres = parsedJson['genres'] as List<dynamic>,
+        this.summary = parsedJson['summary'],
+        this.language = parsedJson['language'],
+        this.medium_cover_image = parsedJson['medium_cover_image'],
+        this.title = parsedJson['title'];
+}
