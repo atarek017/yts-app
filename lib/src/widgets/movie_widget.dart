@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:yts/src/core/models/movieModel.dart';
@@ -13,9 +14,9 @@ class MovieWidget extends StatelessWidget {
       padding: const EdgeInsets.only(top: 15),
       child: Center(
           child: Container(
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.all(5),
         width: MediaQuery.of(context).size.width * .7,
-        height: 460,
+        height: 400,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10), color: Colors.blue),
         child: Column(
@@ -27,17 +28,19 @@ class MovieWidget extends StatelessWidget {
             Center(
               child: Container(
                 color: Colors.white,
-                padding: EdgeInsets.all(4),
+                padding: EdgeInsets.all(3),
                 child: Image.network(
                   movieMode.medium_cover_image,
+                  height: 280,
                 ),
               ),
             ),
             SizedBox(
               height: 10,
             ),
-            Text(
+            AutoSizeText(
               movieMode.title,
+              maxLines: 1,
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
@@ -46,8 +49,9 @@ class MovieWidget extends StatelessWidget {
             SizedBox(
               height: 5,
             ),
-            Text(
+            AutoSizeText(
               movieMode.genres.toString(),
+              maxLines: 1,
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(

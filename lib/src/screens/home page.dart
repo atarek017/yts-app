@@ -1,9 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../widgets/navigation_icon.dart';
-import '../widgets/navigation_text.dart';
-import 'movies list.dart';
-import 'movies suggests.dart';
+import 'adventureMovies.dart';
+import 'newMovies.dart';
+import 'actionMovies.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -11,50 +11,46 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final PageStorageKey keyOne = PageStorageKey('pageOne');
-  final PageStorageBucket storageBucket = PageStorageBucket();
-
-  int _navigationIndex = 0;
-  Widget currentPage;
-  MoviesSuggests moviesSuggests;
-  MoviesList moviesList;
-
-  List<Widget> pages;
-
-  @override
-  void initState() {
-    super.initState();
-    moviesList = MoviesList();
-    moviesSuggests = MoviesSuggests();
-
-    pages = [moviesList, moviesSuggests];
-    currentPage = pages[_navigationIndex];
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageStorage(
-        bucket: storageBucket,
-        child: currentPage,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-              icon: NavigationIcon(Icons.list),
-              title: NavigationText('movies List')),
-          BottomNavigationBarItem(
-              icon: NavigationIcon(Icons.star_border),
-              title: NavigationText('movies Suggests')),
-        ],
-        currentIndex: _navigationIndex,
-        onTap: (value) {
-          setState(() {
-            _navigationIndex = value;
-            currentPage = pages[_navigationIndex];
-          });
-        },
-      ),
-    );
+        appBar: AppBar(
+          title: Text("YTS App"),
+        ),
+        body: DefaultTabController(
+          length: 3,
+          initialIndex: 0,
+          child: Column(
+            children: <Widget>[
+              TabBar(
+                indicatorColor: Colors.orange,
+                tabs: <Widget>[
+                  Tab(
+                    child: Text("New",
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                  Tab(
+                    child: Text("Action",
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                  Tab(
+                    child: Text("Adventure",
+                        style: TextStyle(color: Colors.white)),
+                  )
+                ],
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * .75,
+                child: TabBarView(
+                  children: <Widget>[
+                    NewMoviesList(),
+                    ActionMoviesList(),
+                    AdventureMoviesList()
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ));
   }
 }

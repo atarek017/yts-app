@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:yts/src/core/providers/moviesListProvider.dart';
+import 'package:yts/src/core/providers/newMoviesListProvider.dart';
 import 'package:yts/src/widgets/movie_widget.dart';
 
-class MoviesList extends StatefulWidget {
+class NewMoviesList extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _MoviesListState();
+    return _NewMoviesListState();
   }
 }
 
-class _MoviesListState extends State<MoviesList> {
+class _NewMoviesListState extends State<NewMoviesList> {
   final ScrollController moviesListController = ScrollController();
 
   @override
@@ -21,7 +21,7 @@ class _MoviesListState extends State<MoviesList> {
       if (moviesListController.position.pixels >=
           moviesListController.position.maxScrollExtent)
         setState(() {
-          Provider.of<MoviesListProvider>(context).fetchNowMovies();
+          Provider.of<NewMoviesListProvider>(context).fetchNowMovies();
         });
     });
   }
@@ -30,7 +30,7 @@ class _MoviesListState extends State<MoviesList> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<MoviesListProvider>(context);
+    final provider = Provider.of<NewMoviesListProvider>(context);
 
     return FutureBuilder(
         future: provider.fetchNowMovies(),

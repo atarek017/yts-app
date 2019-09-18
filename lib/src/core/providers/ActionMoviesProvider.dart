@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:yts/src/core/models/movieModel.dart';
 
-class MoviesListProvider with ChangeNotifier {
+class ActionMoviesListProvider with ChangeNotifier {
   List<MovieMode> _moviesList = [];
   int _pageNum = 0;
 
@@ -15,8 +15,9 @@ class MoviesListProvider with ChangeNotifier {
   Future<void> fetchNowMovies() async {
     _pageNum++;
     if (_pageNum <= 662) {
-      final String url =
-          "https://yts.lt/api/v2/list_movies.json?page=" + _pageNum.toString();
+      final String url = "https://yts.ag/api/v2/list_movies.json?page=" +
+          _pageNum.toString() +
+          "&genre=Action";
       await http.get(url).then((response) {
         var res = json.decode(response.body);
         for (int i = 0; i < res['data']['movies'].length; i++) {
