@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:yts/src/core/providers/AdventureMoviesProvider.dart';
+import 'package:yts/src/core/providers/newMoviesListProvider.dart';
 import 'package:yts/src/widgets/movie_widget.dart';
+
+import 'detailsPage.dart';
 
 class AdventureMoviesList extends StatefulWidget {
   @override
@@ -16,29 +18,48 @@ class _AdventureMoviesListState extends State<AdventureMoviesList> {
   @override
   void initState() {
     super.initState();
-    // fetch more movies when the list reaches its end
+//     fetch more movies when the list reaches its end
     moviesListController.addListener(() {
       if (moviesListController.position.pixels >=
-          moviesListController.position.maxScrollExtent)
+          moviesListController.position.maxScrollExtent) {
         setState(() {
-          Provider.of<AdventureMoviesListProvider>(context).fetchNowMovies();
+          Provider.of<NewMoviesListProvider>(context).isLoadingAdventure = true;
         });
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<AdventureMoviesListProvider>(context);
-
+    final provider = Provider.of<NewMoviesListProvider>(context);
     return FutureBuilder(
-        future: provider.fetchNowMovies(),
-        builder: (context, snapShot) {
-          return ListView.builder(
-              controller: moviesListController,
-              itemCount: provider.getMoviesList.length,
-              itemBuilder: (context, index) {
-                return MovieWidget(provider.getMoviesList[index]);
-              });
+        future: provider.fetchAdventureMovies(),
+        builder: (BuildContext context, AsyncSnapshot<bool> snapShot) {
+          if (snapShot.data != null && snapShot.data) {
+            return ListView.builder(
+                controller: moviesListController,
+                itemCount: provider.getAdventureMoviesList.length,
+                scrollDirection: Axis.vertical,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () {
+                      provider
+                          .moveSelected(provider.getAdventureMoviesList[index]);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => DetailsPage()),
+                      );
+                    },
+                    child: MovieWidget(provider.getAdventureMoviesList[index]),
+                  );
+                });
+          } else {
+            return Container(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
         });
   }
 }

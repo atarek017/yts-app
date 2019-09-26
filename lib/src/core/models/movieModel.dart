@@ -9,6 +9,7 @@ class MovieMode {
   final String summary;
   final String language;
   final String medium_cover_image;
+  final String yt_trailer_code;
 
   MovieMode(
       {this.id,
@@ -20,7 +21,8 @@ class MovieMode {
       this.language,
       this.medium_cover_image,
       this.runtime,
-      this.summary});
+      this.summary,
+      this.yt_trailer_code});
 
   MovieMode.fromJson(Map<String, dynamic> parsedJson)
       : this.id = parsedJson['id'],
@@ -32,5 +34,6 @@ class MovieMode {
         this.summary = parsedJson['summary'],
         this.language = parsedJson['language'],
         this.medium_cover_image = parsedJson['medium_cover_image'],
-        this.title = parsedJson['title'];
+        this.title = parsedJson['title'],
+        this.yt_trailer_code = parsedJson['yt_trailer_code'];
 }
