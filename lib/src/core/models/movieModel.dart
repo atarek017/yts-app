@@ -1,3 +1,5 @@
+import 'package:yts/src/core/models/torrentModel.dart';
+
 class MovieMode {
   final int id;
   final String url;
@@ -10,6 +12,7 @@ class MovieMode {
   final String language;
   final String medium_cover_image;
   final String yt_trailer_code;
+  final List<TorrentModel> torrents;
 
   MovieMode(
       {this.id,
@@ -22,7 +25,8 @@ class MovieMode {
       this.medium_cover_image,
       this.runtime,
       this.summary,
-      this.yt_trailer_code});
+      this.yt_trailer_code,
+      this.torrents});
 
   MovieMode.fromJson(Map<String, dynamic> parsedJson)
       : this.id = parsedJson['id'],
@@ -35,5 +39,6 @@ class MovieMode {
         this.language = parsedJson['language'],
         this.medium_cover_image = parsedJson['medium_cover_image'],
         this.title = parsedJson['title'],
-        this.yt_trailer_code = parsedJson['yt_trailer_code'];
+        this.yt_trailer_code = parsedJson['yt_trailer_code'],
+        this.torrents = (parsedJson['torrents'] as List<dynamic>).map( (torrentJson) => TorrentModel.fromJson(torrentJson)).toList();
 }

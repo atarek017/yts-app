@@ -1,9 +1,11 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:yts/src/core/providers/newMoviesListProvider.dart';
 import 'package:yts/src/screens/trailar.dart';
 import 'package:yts/src/widgets/movie_widget.dart';
+import 'package:yts/src/widgets/torrent_widget.dart';
 
 class DetailsPage extends StatefulWidget {
   @override
@@ -33,6 +35,9 @@ class _DetailsPageState extends State<DetailsPage> {
         Provider.of<NewMoviesListProvider>(context);
     double wedght = MediaQuery.of(context).size.width;
     double hight = MediaQuery.of(context).size.height;
+
+    var date = new DateTime.fromMicrosecondsSinceEpoch(provider.selectedMove.runtime);
+
     return Scaffold(
       body: ListView(
         padding: EdgeInsets.all(5),
@@ -51,22 +56,43 @@ class _DetailsPageState extends State<DetailsPage> {
           Container(
             padding: EdgeInsets.all(5),
             width: wedght,
-            height: 50,
+            height: 100,
             color: Colors.black54,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  "Name :  " + provider.selectedMove.title,
+                AutoSizeText(
+                  "Name  :  " + provider.selectedMove.title,
+                  maxLines: 1,
                   style: TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.white),
                 ),
                 SizedBox(
                   height: 5,
                 ),
+                AutoSizeText(
+                  "Genre  :  " + provider.selectedMove.genres.toString(),
+                  maxLines: 1,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white70),
+                ),
+                SizedBox(
+                  height: 2,
+                ),
                 Text(
-                  "Genre :  " + provider.selectedMove.genres.toString(),
+                  "Rating :  " + provider.selectedMove.rating.toString(),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white70),
+                ),
+                Text(
+                  "Year     :  " + provider.selectedMove.year.toString(),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white70),
+                ),
+
+                Text(
+                  "Time    :  " + date.hour.toString() + "h : "+date.minute.toString() +" m" ,
                   style: TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.white70),
                 ),
@@ -141,10 +167,10 @@ class _DetailsPageState extends State<DetailsPage> {
             ),
           ),
           SizedBox(
-            height: 20,
+            height: 10,
           ),
           Container(
-            height: 450,
+            height: provider.getSugestMoviesList.length >= 1 ? 420 : 0,
             child: FutureBuilder(
                 future: provider.fetchSuggestionMovies(),
                 builder: (BuildContext context, AsyncSnapshot<bool> snapShot) {
@@ -164,7 +190,7 @@ class _DetailsPageState extends State<DetailsPage> {
                               );
                             },
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.only(right: 10),
                               child: MovieWidget(
                                   provider.getSugestMoviesList[index]),
                             ),
@@ -178,9 +204,34 @@ class _DetailsPageState extends State<DetailsPage> {
                     );
                   }
                 }),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Container(
+            height: getHighTtourent(),
+            child: ListView.builder(
+              itemCount: provider.selectedMove.torrents.length,
+              itemBuilder: (context, index) {
+                return TorrentWidget(provider.selectedMove.torrents[index]);
+              },
+            ),
           )
         ],
       ),
     );
+  }
+
+  double getHighTtourent() {
+    int length = Provider.of<NewMoviesListProvider>(context)
+        .selectedMove
+        .torrents
+        .length;
+
+    double tourHight = length.toDouble() * 150;
+    if (length >= 3) {
+      tourHight = 2.5 * 150;
+    }
+    return tourHight;
   }
 }

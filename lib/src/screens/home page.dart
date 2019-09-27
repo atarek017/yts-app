@@ -15,7 +15,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("YTS App"),
+          centerTitle: true,
+          title: Text("Torrent Movies App"),
         ),
         body: DefaultTabController(
           length: 3,
