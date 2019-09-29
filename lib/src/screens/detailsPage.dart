@@ -205,6 +205,14 @@ class _DetailsPageState extends State<DetailsPage> {
                   }
                 }),
           ),
+
+          SizedBox(
+            height: 20,
+          ),
+          Text(
+            " Torrent Links : ",
+            style: TextStyle(color: Colors.deepOrange),
+          ),
           SizedBox(
             height: 10,
           ),

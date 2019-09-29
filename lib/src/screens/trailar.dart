@@ -1,50 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class Trailar extends StatefulWidget {
-  String ytCode = "";
+  String ytID = "";
 
-  Trailar(this.ytCode);
+  Trailar(this.ytID);
 
   @override
   _TrailarState createState() => _TrailarState();
 }
 
 class _TrailarState extends State<Trailar> {
-  VideoPlayerController playerController;
-  VoidCallback listener;
+  YoutubePlayerController _controller = YoutubePlayerController();
+  double _volume = 100;
+  bool _muted = false;
+  String _playerStatus = "";
+  String _errorCode = '0';
 
-  @override
-  void initState() {
-    super.initState();
-    listener = () {
-      setState(() {});
-    };
-  }
-
-  void createVideo() {
-    if (playerController == null) {
-      playerController = VideoPlayerController.network(
-          "https://r6---sn-p5qs7nee.googlevideo.com/videoplayback?expire=1569139287&ei=99WGXYHwK7qshwaohIqoAg&ip=3.86.249.97&id=o-AFI5r-l1WDgL03HxJ-uJTm77iOXiiCRK_e9JIRWWEter&itag=18&source=youtube&requiressl=yes&mm=31%2C26&mn=sn-p5qs7nee%2Csn-t0a7ln7d&ms=au%2Conr&mv=u&mvi=5&pl=21&mime=video%2Fmp4&gir=yes&clen=25063757&ratebypass=yes&dur=812.257&lmt=1545030586158089&mt=1569116922&fvip=4&txp=5431432&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cmime%2Cgir%2Cclen%2Cratebypass%2Cdur%2Clmt&sig=ALgxI2wwRgIhAPhrFtrq-t_d7xGjUwCMkqMxtjoxHkHR0LPJ_hmL_mKJAiEAvI5XRmRw2xSI8OzpBSBLOU3Q6G_FeB4df0tziTshgz4%3D&lsparams=mm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl&lsig=AHylml4wRAIgcsN0JuUklzUntQ9teozhEF4_oVB_r4sRTv4y8ckdYBACIFQq10WZJJuv5kqT8hxl-Hh-80l1pRGHAYt5mTyYHkZ7")
-        ..addListener(listener)
-        ..setVolume(1.0)
-        ..initialize()
-        ..play()
-      ;
-    } else {
-      if (playerController.value.isPlaying) {
-        playerController.pause();
-      } else {
-        playerController.initialize();
-        playerController.play();
-      }
+  void listener() {
+    if (_controller.value.playerState == PlayerState.ENDED) {
+    }
+    if (mounted) {
+      setState(() {
+        _playerStatus = _controller.value.playerState.toString();
+        _errorCode = _controller.value.errorCode.toString();
+      });
     }
   }
 
   @override
   void deactivate() {
-    playerController.setVolume(0.0);
-    playerController.removeListener(listener);
+    // This pauses video while navigating to next page.
+    _controller.pause();
     super.deactivate();
   }
 
@@ -52,25 +39,139 @@ class _TrailarState extends State<Trailar> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Video Example'),
+        title: Text(
+          "Trailar ",
+          style: TextStyle(color: Colors.white),
+        ),
       ),
-      body: Center(
-          child: AspectRatio(
-              aspectRatio: 16 / 9,
-              child: Container(
-                child: (playerController != null
-                    ? VideoPlayer(
-                        playerController,
-                      )
-                    : Container()),
-              ))),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          createVideo();
-          playerController.play();
-        },
-        child: Icon(Icons.play_arrow),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            YoutubePlayer(
+              context: context,
+              videoId: widget.ytID,
+              flags: YoutubePlayerFlags(
+                mute: false,
+                autoPlay: true,
+                forceHideAnnotation: true,
+                showVideoProgressIndicator: true,
+                disableDragSeek: false,
+              ),
+              videoProgressIndicatorColor: Color(0xFFFF0000),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.white,
+                    size: 20.0,
+                  ),
+                  onPressed: () {},
+                ),
+                Text(
+                  'Hello! This is a test title.',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18.0,
+                  ),
+                ),
+                Spacer(),
+                IconButton(
+                  icon: Icon(
+                    Icons.settings,
+                    color: Colors.white,
+                    size: 25.0,
+                  ),
+                  onPressed: () {},
+                ),
+              ],
+              progressColors: ProgressColors(
+                playedColor: Color(0xFFFF0000),
+                handleColor: Color(0xFFFF4433),
+              ),
+              onPlayerInitialized: (controller) {
+                _controller = controller;
+                _controller.addListener(listener);
+              },
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      IconButton(
+                        icon: Icon(
+                          _controller.value.isPlaying
+                              ? Icons.play_arrow
+                              : Icons.pause,
+                        ),
+                        onPressed: () {
+                          _controller.value.isPlaying
+                              ? _controller.pause()
+                              : _controller.play();
+                          setState(() {});
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(_muted ? Icons.volume_off : Icons.volume_up),
+                        onPressed: () {
+                          _muted ? _controller.unMute() : _controller.mute();
+                          setState(() {
+                            _muted = !_muted;
+                          });
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.fullscreen),
+                        onPressed: () => _controller.enterFullScreen(),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        "Volume",
+                        style: TextStyle(fontWeight: FontWeight.w300),
+                      ),
+                      Expanded(
+                        child: Slider(
+                          inactiveColor: Colors.transparent,
+                          value: _volume,
+                          min: 0.0,
+                          max: 100.0,
+                          divisions: 10,
+                          label: '${(_volume).round()}',
+                          onChanged: (value) {
+                            setState(() {
+                              _volume = value;
+                            });
+                            _controller.setVolume(_volume.round());
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
+
+
 }
