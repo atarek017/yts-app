@@ -46,11 +46,14 @@ class _DetailsPageState extends State<DetailsPage> {
             height: 30,
           ),
           Center(
-            child: Image.network(
-              provider.selectedMove.medium_cover_image,
-              height: hight * .7,
-              width: wedght * .7,
-              fit: BoxFit.fill,
+            child: Hero(
+              tag: '${provider.selectedMove.id}',
+              child: Image.network(
+                provider.selectedMove.medium_cover_image,
+                height: hight * .7,
+                width: wedght * .7,
+                fit: BoxFit.fill,
+              ),
             ),
           ),
           Container(
@@ -170,7 +173,7 @@ class _DetailsPageState extends State<DetailsPage> {
             height: 10,
           ),
           Container(
-            height: provider.getSugestMoviesList.length >= 1 ? 420 : 0,
+            height: provider.getSugestMoviesList.length >= 1 ? 300 : 0,
             child: FutureBuilder(
                 future: provider.fetchSuggestionMovies(),
                 builder: (BuildContext context, AsyncSnapshot<bool> snapShot) {
