@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'adventureMovies.dart';
+import 'animationMoviesPage.dart';
 import 'newMovies.dart';
 import 'actionMovies.dart';
 
@@ -19,25 +20,29 @@ class _HomePageState extends State<HomePage> {
           title: Text("Torrent Movies App"),
         ),
         body: DefaultTabController(
-          length: 3,
+          length: 4,
           initialIndex: 0,
           child: Column(
             children: <Widget>[
               TabBar(
+                isScrollable: true,
                 indicatorColor: Colors.orange,
                 tabs: <Widget>[
                   Tab(
-                    child: Text("New",
-                        style: TextStyle(color: Colors.white)),
+                    child: Text("New", style: TextStyle(color: Colors.white)),
                   ),
                   Tab(
-                    child: Text("Action",
-                        style: TextStyle(color: Colors.white)),
+                    child:
+                        Text("Action", style: TextStyle(color: Colors.white)),
                   ),
                   Tab(
                     child: Text("Adventure",
                         style: TextStyle(color: Colors.white)),
-                  )
+                  ),
+                  Tab(
+                    child: Text("Animation",
+                        style: TextStyle(color: Colors.white)),
+                  ),
                 ],
               ),
               Container(
@@ -46,7 +51,8 @@ class _HomePageState extends State<HomePage> {
                   children: <Widget>[
                     NewMoviesList(),
                     ActionMoviesList(),
-                    AdventureMoviesList()
+                    AdventureMoviesList(),
+                    AnimationMoviesList()
                   ],
                 ),
               ),

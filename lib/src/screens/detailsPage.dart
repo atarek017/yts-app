@@ -173,7 +173,7 @@ class _DetailsPageState extends State<DetailsPage> {
             height: 10,
           ),
           Container(
-            height: provider.getSugestMoviesList.length >= 1 ? 300 : 0,
+            height: provider.getSugestMoviesList.length >= 1 ? 270 : 0,
             child: FutureBuilder(
                 future: provider.fetchSuggestionMovies(),
                 builder: (BuildContext context, AsyncSnapshot<bool> snapShot) {

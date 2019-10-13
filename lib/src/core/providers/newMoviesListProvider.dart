@@ -9,24 +9,43 @@ class NewMoviesListProvider with ChangeNotifier {
   List<MovieMode> _newMoviesList = [];
   List<MovieMode> _adventureMoviesList = [];
   List<MovieMode> _actionMoviesList = [];
+  List<MovieMode> _animationMoviesList = [];
+  List<MovieMode> _sugestMoviesList = [];
 
   MovieMode _selectedMove;
 
   int _pageNumNewMovies = 0;
   int _pageNumAdventure = 0;
   int _pageNumAction = 0;
+  int _pageNumAnimation = 0;
+  int _idSugest;
+
+  bool _isLoading = true;
+  bool _isLoadingAction = true;
+  bool _isLoadingAdventure = true;
+  bool _isLoadingSugest = false;
+  bool _isLoadingAnimation = true;
 
   List<MovieMode> get getNewMoviesList => _newMoviesList;
 
   List<MovieMode> get getAdventureMoviesList => _adventureMoviesList;
 
   List<MovieMode> get geActionMoviesList => _actionMoviesList;
+  List<MovieMode> get geAnimationMoviesList => _animationMoviesList;
+
+
+  List<MovieMode> get getSugestMoviesList => _sugestMoviesList;
 
   MovieMode get selectedMove => _selectedMove;
 
   moveSelected(MovieMode value) => _selectedMove = value;
 
-  bool _isLoading = true;
+  int get idSugest => _idSugest;
+
+  set idSugest(int val) {
+    _idSugest = val;
+    notifyListeners();
+  }
 
   bool get isLoading => _isLoading;
 
@@ -35,16 +54,12 @@ class NewMoviesListProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  bool _isLoadingAction = true;
-
   bool get isLoadingAction => _isLoadingAction;
 
   set isLoadingAction(bool value) {
     _isLoadingAction = value;
     notifyListeners();
   }
-
-  bool _isLoadingAdventure = true;
 
   bool get isLoadingAdventure => _isLoadingAdventure;
 
@@ -53,12 +68,17 @@ class NewMoviesListProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  bool _isLoadingSugest = false;
-
   bool get isLoadingSugest => _isLoadingSugest;
 
   set isLoadingSugest(bool value) {
     _isLoadingSugest = value;
+    notifyListeners();
+  }
+
+  bool get isLoadingAnimation => _isLoadingAnimation;
+
+  set isLoadingAnimation(bool value) {
+    _isLoadingAnimation = value;
     notifyListeners();
   }
 
@@ -84,7 +104,6 @@ class NewMoviesListProvider with ChangeNotifier {
     return true;
   }
 
-
   //Adventure movie fetching
   Future<bool> fetchAdventureMovies() async {
     if (_pageNumAdventure <= 660 && _isLoadingAdventure == true) {
@@ -107,20 +126,6 @@ class NewMoviesListProvider with ChangeNotifier {
     return true;
   }
 
-  List<MovieMode> _sugestMoviesList = [];
-
-  List<MovieMode> get getSugestMoviesList => _sugestMoviesList;
-
-  int _idSugest;
-
-  int get idSugest => _idSugest;
-
-  set idSugest(int val) {
-    _idSugest = val;
-    notifyListeners();
-  }
-
-
   //Action movie fetching
   Future<bool> fetchActionMovies() async {
     if (_pageNumAction <= 660 && _isLoadingAction == true) {
@@ -132,7 +137,6 @@ class NewMoviesListProvider with ChangeNotifier {
         for (int i = 0; i < res['data']['movies'].length; i++) {
           _actionMoviesList.add(MovieMode.fromJson(res['data']['movies'][i]));
         }
-
       }).catchError((err) {
         print("ERROR :: " + err.toString());
       });
@@ -143,10 +147,31 @@ class NewMoviesListProvider with ChangeNotifier {
     return true;
   }
 
+  //Animation movie fetching
+  Future<bool> fetchAnimationMovies() async {
+    if (_pageNumAnimation <= 660 && _isLoadingAnimation == true) {
+      final String url =
+          "https://yts.ag/api/v2/list_movies.json?page=${_pageNumAnimation++}" +
+              "&genre=Animation";
+      await http.get(url).then((response) {
+        var res = json.decode(response.body);
+        for (int i = 0; i < res['data']['movies'].length; i++) {
+          _animationMoviesList
+              .add(MovieMode.fromJson(res['data']['movies'][i]));
+        }
+      }).catchError((err) {
+        print("ERROR :: " + err.toString());
+      });
+      _isLoadingAnimation = false;
+      notifyListeners();
+    }
+
+    return true;
+  }
 
   //suggestion movie fetching
   Future<bool> fetchSuggestionMovies() async {
-    if (_isLoadingSugest==true && _idSugest != null) {
+    if (_isLoadingSugest == true && _idSugest != null) {
       final String url =
           "https://yts.lt/api/v2/movie_suggestions.json?movie_id=" +
               _idSugest.toString();
@@ -164,8 +189,4 @@ class NewMoviesListProvider with ChangeNotifier {
     }
     return true;
   }
-
-
-
-
 }
