@@ -43,7 +43,7 @@ class _AnimationMoviesListState extends State<AnimationMoviesList> {
             return StaggeredGridView.countBuilder(
                 crossAxisCount: 4,
                 itemCount: provider.geAnimationMoviesList.length,
-                mainAxisSpacing: 10,
+                mainAxisSpacing: 4,
                 crossAxisSpacing: 10,
                 padding: EdgeInsets.only(left: 10, right: 10),
                 staggeredTileBuilder: (int index) =>
